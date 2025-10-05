@@ -112,9 +112,27 @@ func main() {
 		ProxyHeader: os.Getenv("PROXY_HEADER"),
 	})
 
-	g.RDB = redis.NewClient(&redis.Options{
+	// Parse Redis URI for authentication
+	redisOptions := &redis.Options{
 		Addr: g.REDIS_URI,
-	})
+	}
+	
+	// Check if Redis URI contains authentication
+	if strings.Contains(g.REDIS_URI, "@") {
+		// Extract password from redis://user:password@host:port format
+		parts := strings.Split(g.REDIS_URI, "@")
+		if len(parts) == 2 {
+			authPart := strings.TrimPrefix(parts[0], "redis://")
+			authSplit := strings.Split(authPart, ":")
+			if len(authSplit) == 2 {
+				redisOptions.Username = authSplit[0]
+				redisOptions.Password = authSplit[1]
+				redisOptions.Addr = parts[1]
+			}
+		}
+	}
+	
+	g.RDB = redis.NewClient(redisOptions)
 
 	if os.Getenv("PROMETHEUS") == "true" {
 		promauto.NewGaugeFunc(prometheus.GaugeOpts{
