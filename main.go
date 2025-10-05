@@ -116,7 +116,7 @@ func main() {
 	redisOptions := &redis.Options{
 		Addr: g.REDIS_URI,
 	}
-	
+
 	// Check if Redis URI contains authentication
 	if strings.Contains(g.REDIS_URI, "@") {
 		// Extract password from redis://user:password@host:port format
@@ -131,7 +131,7 @@ func main() {
 			}
 		}
 	}
-	
+
 	g.RDB = redis.NewClient(redisOptions)
 
 	if os.Getenv("PROMETHEUS") == "true" {
