@@ -1,0 +1,45 @@
+name: vencloud
+services:
+- name: vencloud-backend
+  source_dir: /
+  github:
+    repo: your-username/vencloud
+    branch: main
+  run_command: /backend
+  environment_slug: docker
+  dockerfile_path: Dockerfile
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  envs:
+  - key: HOST
+    value: 0.0.0.0
+  - key: PORT
+    value: 8080
+  - key: REDIS_URI
+    value: ${vencloud-redis.REDIS_URL}
+  - key: ROOT_REDIRECT
+    value: https://vencord.dev
+  - key: DISCORD_CLIENT_ID
+    value: your_discord_client_id
+  - key: DISCORD_CLIENT_SECRET
+    value: your_discord_client_secret
+  - key: DISCORD_REDIRECT_URI
+    value: https://your-app.ondigitalocean.app/auth/callback
+  - key: PEPPER_SETTINGS
+    value: your_random_pepper_settings
+  - key: PEPPER_SECRETS
+    value: your_random_pepper_secrets
+  - key: SIZE_LIMIT
+    value: "1048576"
+  - key: ALLOWED_USERS
+    value: ""
+  - key: PROXY_HEADER
+    value: X-Forwarded-For
+  - key: PROMETHEUS
+    value: "false"
+
+databases:
+- name: vencloud-redis
+  engine: REDIS
+  version: "7"
+  size: db-s-1vcpu-1gb

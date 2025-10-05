@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: vencloud-backend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 8080
+      - key: REDIS_URI
+        fromService:
+          type: redis
+          name: vencloud-redis
+          property: connectionString
+      - key: ROOT_REDIRECT
+        value: https://vencord.dev
+      - key: DISCORD_CLIENT_ID
+        sync: false
+      - key: DISCORD_CLIENT_SECRET
+        sync: false
+      - key: DISCORD_REDIRECT_URI
+        sync: false
+      - key: PEPPER_SETTINGS
+        sync: false
+      - key: PEPPER_SECRETS
+        sync: false
+      - key: SIZE_LIMIT
+        value: 1048576
+      - key: ALLOWED_USERS
+        value: ""
+      - key: PROXY_HEADER
+        value: X-Forwarded-For
+      - key: PROMETHEUS
+        value: false
+
+  - type: redis
+    name: vencloud-redis
+    plan: free
